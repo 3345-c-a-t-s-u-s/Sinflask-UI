@@ -279,7 +279,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 		UIListLayout.Parent = Tab_Main
 		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-		UIListLayout.Padding = UDim.new(0, 5)
+		UIListLayout.Padding = UDim.new(0, 8)
 
 		DEBUG_SCROLL_TAB.Name = "DEBUG_SCROLL_TAB"
 		DEBUG_SCROLL_TAB.Parent = Tab_Main
