@@ -91,7 +91,7 @@ end
 
 function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,confix : number)
 	if not LabelWindow then return warn("no found LabelWindow") else print('Loading, please Waiting for UI') end
-	local desize = UDim2.new(0.340999991, 0, 0.400000006, 0)
+	local desize = UDim2.new(0.28416665916, 0, 0.33333333833, 0)
 	local canmove = true
 	if confix == 2 then
 		desize = UDim2.new(0.455, 0,0.36, 0)
