@@ -1222,6 +1222,15 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 					tween_to(true)
 				end
 			end)
+			local assets = {}
+			
+			function assets:Change(NewList)
+				List = NewList
+			end
+			function assets:Refresh(NewList)
+				Refresh()
+			end
+			return assets
 		end
 		
 		return TAB_LIB;
