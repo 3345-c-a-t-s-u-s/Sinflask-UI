@@ -71,20 +71,23 @@ local function Round(Number, Factor)
 end
 
 local function CreateAutoSize(ScrollingFrame : ScrollingFrame?,UIListLayout : UIListLayout?,CONFIX : string | any?) : FunctionalTest?
-	if CONFIX == tostring("X") or not CONFIX then
+	if (CONFIX == tostring("X") or not CONFIX) then
 		local SIZE_Y = ScrollingFrame.CanvasSize.X.Offset
 		ScrollingFrame.CanvasSize = UDim2.new(0,SIZE_Y,0,UIListLayout.AbsoluteContentSize.X)
-		return UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 			local SizeY = UIListLayout.AbsoluteContentSize.Y + 10
 			TweenService:Create(ScrollingFrame,TweenInfo.new(0.1),{CanvasSize = UDim2.new(0,SIZE_Y,0,SizeY)}):Play()
 		end)
-	elseif CONFIX == tostring("Y") then
+		return
+	end
+	if CONFIX == tostring("Y") then
 		local SIZE_X = ScrollingFrame.CanvasSize.X.Offset
-		ScrollingFrame.CanvasSize = UDim2.new(0,UIListLayout.AbsoluteContentSize.Y,0,SIZE_X)
-		return UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-			local SizeY = UIListLayout.AbsoluteContentSize.Y + 10
+		ScrollingFrame.CanvasSize = UDim2.new(0,UIListLayout.AbsoluteContentSize.X + 10,0,SIZE_X)
+		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+			local SizeY = UIListLayout.AbsoluteContentSize.X + 10
 			TweenService:Create(ScrollingFrame,TweenInfo.new(0.1),{CanvasSize = UDim2.new(0,SizeY,0,SIZE_X)}):Play()
 		end)
+		return
 	end
 	return false;
 end
@@ -118,14 +121,14 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 	local UIGradient = Instance.new("UIGradient")
 	local TAB_LISTS = {}
 	local WINDOW_LIB = {}
-	
+
 	CreateAutoSize(ScrollingFrame,UIListLayout,"Y")
-	
+
 	SinflaskUI.Name = "Sinflask UI"
 	SinflaskUI.Parent = SINFLASK_LIB.GUI_SHOWED
 	SinflaskUI.ResetOnSpawn = false
 	SinflaskUI.IgnoreGuiInset = true
-	
+
 	Shadow.Name = "Shadow"
 	Shadow.Parent = SinflaskUI
 	Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -140,7 +143,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 	Shadow.ScaleType = Enum.ScaleType.Slice
 	Shadow.SliceCenter = Rect.new(95, 95, 205, 205)
 	Shadow.ZIndex = 1
-	
+
 	Frame.Parent = Shadow
 	Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 	Frame.BackgroundColor3 = Color3.fromRGB(52, 52, 52)
@@ -255,16 +258,16 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 
 	UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 1.00), NumberSequenceKeypoint.new(0.05, 0.00), NumberSequenceKeypoint.new(0.95, 0.00), NumberSequenceKeypoint.new(1.00, 1.00)}
 	UIGradient.Parent = Tab_Blackground
-	
+
 	function WINDOW_LIB:NewTab(LabelTab : string?)
 		local TAB_LIB = {}
 		-- Create Scroll --
 		local Tab_Main = Instance.new("ScrollingFrame")
 		local UIListLayout = Instance.new("UIListLayout")
 		local DEBUG_SCROLL_TAB = Instance.new("Frame")
-		
+
 		CreateAutoSize(Tab_Main,UIListLayout,"X")
-		
+
 		Tab_Main.Name = "Tab_Main"
 		Tab_Main.Parent = Frame
 		Tab_Main.Active = true
@@ -319,7 +322,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 
 		UIAspectRatioConstraint.Parent = TabButton
 		UIAspectRatioConstraint.AspectRatio = 2.500
-		
+
 		if #TAB_LISTS==0 then
 			Tab_Main.Visible = true
 		else
@@ -327,7 +330,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 		end
 		table.insert(TAB_LISTS,Tab_Main)
 		local MyIndex = table.find(TAB_LISTS,Tab_Main)
-		
+
 		local function GetTabOpen()
 			for i,v in ipairs(TAB_LISTS) do
 				if v.Visible then
@@ -337,7 +340,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			Tab_Main.Visible = true
 			return MyIndex,Tab_Main
 		end
-		
+
 		local function OnToggleEffect()
 			local CurrentTime = 0.1
 			local index,Open = GetTabOpen()
@@ -386,9 +389,9 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 				TweenService:Create(UIStroke,TweenInfo.new(0.1),{Transparency = 0.65}):Play()
 			end
 		end
-		
+
 		TabButton.InputChanged:Connect(UpdateUI)
-		
+
 		TabButton.MouseButton1Click:Connect(function()
 			Create_Ripple(TabButton)
 			OnToggleEffect()
@@ -397,7 +400,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 		Tab_Main:GetPropertyChangedSignal('Visible'):Connect(function()
 			UpdateUI()
 		end)
-		
+
 		function TAB_LIB:NewButton(Title,callback)
 			Title = Title or "unknow"
 			callback = callback or function(Nocallback) end
@@ -484,7 +487,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			ButtonClicked.TextColor3 = Color3.fromRGB(0, 0, 0)
 			ButtonClicked.TextSize = 14.000
 			ButtonClicked.TextTransparency = 1.000
-			
+
 			ButtonClicked.MouseButton1Click:Connect(function()
 				Create_Ripple(Button)
 				callback()
@@ -498,7 +501,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			end
 			return asset
 		end
-		
+
 		function TAB_LIB:NewLabel(Title)
 			local Label = Instance.new("Frame")
 			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
@@ -571,7 +574,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			end
 			return asset
 		end
-		
+
 		function TAB_LIB:WarningLabel(Title)
 
 			local WarningLabel = Instance.new("Frame")
@@ -656,15 +659,15 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 
 			UICorner_3.CornerRadius = UDim.new(0, 4)
 			UICorner_3.Parent = ImageLabel
-			
+
 			local asset = {}
 			function asset:SetLabel(NewTitle)
 				LabelText.Text = Title or "Label Text"
 			end
 			return asset
-			
+
 		end
-		
+
 		function TAB_LIB:NewToggle(Title,Default,callback)
 			Default = Default or false
 			callback = callback or function() end
@@ -756,14 +759,14 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			ButtonClicked.TextColor3 = Color3.fromRGB(0, 0, 0)
 			ButtonClicked.TextSize = 14.000
 			ButtonClicked.TextTransparency = 1.000
-			
+
 			local function ToggleEffect(Value)
 				if Value then
 					ImageLabel.Size = UDim2.new(0.3,0,0.3,0)
 					ImageLabel.ImageTransparency = 0.9
 					ImageLabel.Image = "rbxassetid://3944680095" 
 					TweenService:Create(ImageLabel,TweenInfo.new(0.4),{Size = UDim2.new(0.800000012, 0, 0.800000012, 0),ImageTransparency = 0.200}):Play()
-					
+
 				else
 					ImageLabel.Size = UDim2.new(0.3,0,0.3,0)
 					ImageLabel.ImageTransparency = 0.9
@@ -772,9 +775,9 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 
 				end
 			end
-			
+
 			ToggleEffect(Default)
-			
+
 			ButtonClicked.MouseButton1Click:Connect(function()
 				Create_Ripple(Toggle)
 				if Default then
@@ -787,7 +790,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 				callback(Default)
 			end)
 			local asset = {}
-			
+
 			function asset:SetLabel(NewTitle)
 				LabelText = NewTitle
 			end
@@ -797,7 +800,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			end
 			return asset
 		end
-		
+
 		function TAB_LIB:NewSlider(Title,Min,Max,Increment,Callack)
 			Min = Min or 1
 			Max = Max or 100
@@ -920,7 +923,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 					canmove = true
 				end
 			end)
-			
+
 			UserInputService.InputChanged:Connect(function(input)
 				if IS_DOWN  and input.UserInputType == Enum.UserInputType.MouseMovement then 
 					local SizeScale = math.clamp(((input.Position.X - SliderPoint.AbsolutePosition.X) / SliderPoint.AbsoluteSize.X), 0, 1)
@@ -931,19 +934,19 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 				end
 			end)
 			local assets = {}
-			
+
 			function assets:Set(Value)
 				numberShow.Text = Value
 				TweenService:Create(Scroll,TweenInfo.new(0.1),{Size = UDim2.new(math.clamp(Value,0,1),0,1,0)}):Play()
 			end
-			
+
 			function assets:SetLabel(Title)
 				LabelText.Text = Title or "Sliders"
 			end
-			
+
 			return assets
 		end
-		
+
 		function TAB_LIB:NewDropdown(Label,List,callback)
 			List = List or {}
 			callback = callback or function() end
@@ -970,7 +973,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			local DropdownScroll = Instance.new("ScrollingFrame")
 			local UIListLayout = Instance.new("UIListLayout")
 			local debugPlace = Instance.new("Frame")
-			
+
 			Dropdown.Name = "Dropdown"
 			Dropdown.Parent = Tab_Main
 			Dropdown.BackgroundColor3 = Color3.fromRGB(43, 43, 43)
@@ -978,7 +981,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			Dropdown.BorderSizePixel = 0
 			Dropdown.Size = UDim2.new(0.975000024, 0, 1, 0)
 			Dropdown.ClipsDescendants = true
-			
+
 			UIAspectRatioConstraint.Parent = Dropdown
 			UIAspectRatioConstraint.AspectRatio = 5.000
 
@@ -1130,8 +1133,8 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			debugPlace.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			debugPlace.BorderSizePixel = 0
 			debugPlace.Size = UDim2.new(1, 0, 0.00100000005, 0)
-			
-			
+
+
 			local function tween_to(value)
 				if value then
 					TweenService:Create(UIAspectRatioConstraint,TweenInfo.new(0.3,Enum.EasingStyle.Sine),{AspectRatio = 1.35}):Play()
@@ -1143,15 +1146,15 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 					TweenService:Create(UIAspectRatioConstraint,TweenInfo.new(0.4,Enum.EasingStyle.Sine),{AspectRatio = 5}):Play()
 				end
 			end
-			
+
 			local function OnFUNCTION()
 				Choose.Text = Chooseing
 				callback(Chooseing)
 			end
-			
+
 			local function AddList()
 				for index,listname in ipairs(List) do
-					
+
 					local Dropdown = Instance.new("TextButton")
 					local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 					local UICorner = Instance.new("UICorner")
@@ -1190,17 +1193,17 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 					UIGradient.Rotation = 90
 					UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.42), NumberSequenceKeypoint.new(0.03, 0.00), NumberSequenceKeypoint.new(0.95, 0.00), NumberSequenceKeypoint.new(1.00, 0.41)}
 					UIGradient.Parent = UIStroke
-					
+
 					Dropdown.MouseButton1Click:Connect(function()
 						Create_Ripple(Dropdown)
 						Chooseing = listname
 						OnFUNCTION()
 					end)
-					
+
 					DropdownScroll.CanvasSize = UDim2.new(0,0,0,UIListLayout.AbsoluteContentSize.Y + 10)
 				end
 			end
-			
+
 			local function Refresh()
 				for i,v in ipairs(DropdownScroll:GetChildren()) do
 					if v:isA('Frame') and #v:GetChildren() > 0 then
@@ -1210,7 +1213,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 				end
 				AddList()
 			end
-			
+
 			AddList()
 			ButtonClicked.MouseButton1Click:Connect(function()
 				Create_Ripple(Dropdown)
@@ -1223,7 +1226,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 				end
 			end)
 			local assets = {}
-			
+
 			function assets:Change(NewList)
 				List = NewList
 			end
@@ -1232,10 +1235,10 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			end
 			return assets
 		end
-		
+
 		return TAB_LIB;
 	end
-	
+
 	local function Toggle()
 		if SpaceKey then
 			local CloseTween = TweenService:Create(Shadow,TweenInfo.new(0.25),{Size = UDim2.new(0.1,0,0,0)}) 
@@ -1268,7 +1271,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			end)
 		end
 	end)
-	
+
 	UserInputService.InputChanged:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 			if dragToggle and canmove then
@@ -1276,7 +1279,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			end
 		end
 	end)
-	
+
 	UserInputService.InputBegan:Connect(function(inputkey) if inputkey.KeyCode == ToggleKey then Toggle() end end)
 	ToggleButton.MouseButton1Click:Connect(function()
 		Create_Ripple(ToggleButton)
