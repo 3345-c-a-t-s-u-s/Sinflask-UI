@@ -931,6 +931,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 					local Size = UDim2.fromScale(SizeScale, 1)
 					numberShow.Text = Value
 					TweenService:Create(Scroll,TweenInfo.new(0.1),{Size = Size}):Play()
+					Callack(Value)
 				end
 			end)
 			local assets = {}
@@ -938,6 +939,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			function assets:Set(Value)
 				numberShow.Text = Value
 				TweenService:Create(Scroll,TweenInfo.new(0.1),{Size = UDim2.new(math.clamp(Value,0,1),0,1,0)}):Play()
+				Callack(Value)
 			end
 
 			function assets:SetLabel(Title)
