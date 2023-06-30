@@ -1,4 +1,4 @@
-local version = "3"
+local version = "4"
 local LocalPlayer = game:GetService('Players').LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local TweenService = game:GetService('TweenService')
@@ -950,7 +950,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 		end
 
 		function TAB_LIB:NewDropdown(Label,List,callback)
-			local List = List or {}
+			local ListDataTable = List or {}
 			callback = callback or function() end
 			local IsONDropdown = false
 			local Chooseing = ""
@@ -1155,7 +1155,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			end
 
 			local function AddList()
-				for index,listname in ipairs(List) do
+				for index,listname in ipairs(ListDataTable) do
 					local Dropdown = Instance.new("TextButton")
 					local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 					local UICorner = Instance.new("UICorner")
@@ -1233,10 +1233,10 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			local assets = {}
 
 			function assets:Change(NewList)
-				List = {}
-				List = NewList
+				ListDataTable = {}
+				ListDataTable = NewList
 			end
-			function assets:Refresh(NewList)
+			function assets:Refresh()
 				RefreshDB()
 			end
 			return assets
@@ -1291,7 +1291,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 		Create_Ripple(ToggleButton)
 		Toggle()
 	end)
-	return WINDOW_LIB
+	return WINDOW_LIB,version
 end
 
 return SINFLASK_LIB
