@@ -1,4 +1,4 @@
-local version = "4"
+local version = "5"
 local LocalPlayer = game:GetService('Players').LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local TweenService = game:GetService('TweenService')
@@ -1209,7 +1209,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			local function RefreshDB()
 				for i,v in ipairs(DropdownScroll:GetChildren()) do
 					pcall(function()
-						if v:isA('Frame') and v~=debugPlace then
+						if v:isA('TextButton') and v~=debugPlace then
 							v:Destroy()
 							DropdownScroll.CanvasSize = UDim2.new(0,0,0,UIListLayout.AbsoluteContentSize.Y + 10)
 						end
