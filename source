@@ -950,7 +950,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 		end
 
 		function TAB_LIB:NewDropdown(Label,List,callback)
-			List = List or {}
+			local List = List or {}
 			callback = callback or function() end
 			local IsONDropdown = false
 			local Chooseing = ""
@@ -1156,7 +1156,6 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 
 			local function AddList()
 				for index,listname in ipairs(List) do
-
 					local Dropdown = Instance.new("TextButton")
 					local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 					local UICorner = Instance.new("UICorner")
@@ -1199,6 +1198,7 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 					Dropdown.MouseButton1Click:Connect(function()
 						Create_Ripple(Dropdown)
 						Chooseing = listname
+						wait()
 						OnFUNCTION()
 					end)
 
@@ -1206,13 +1206,16 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 				end
 			end
 
-			local function Refresh()
+			local function RefreshDB()
 				for i,v in ipairs(DropdownScroll:GetChildren()) do
-					if v:isA('Frame') and #v:GetChildren() > 0 then
-						DropdownScroll.CanvasSize = UDim2.new(0,0,0,UIListLayout.AbsoluteContentSize.Y + 10)
-						v:Destroy()
-					end
+					pcall(function()
+						if v:isA('Frame') and v~=debugPlace then
+							v:Destroy()
+							DropdownScroll.CanvasSize = UDim2.new(0,0,0,UIListLayout.AbsoluteContentSize.Y + 10)
+						end
+					end)
 				end
+				wait()
 				AddList()
 			end
 
@@ -1230,10 +1233,11 @@ function SINFLASK_LIB:NewWindow(LabelWindow : string?,ToggleKey : Enum.KeyCode?,
 			local assets = {}
 
 			function assets:Change(NewList)
+				List = {}
 				List = NewList
 			end
 			function assets:Refresh(NewList)
-				Refresh()
+				RefreshDB()
 			end
 			return assets
 		end
